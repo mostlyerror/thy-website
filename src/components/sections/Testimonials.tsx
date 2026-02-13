@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, type PanInfo } from "framer-motion";
 import { TESTIMONIALS } from "@/lib/constants";
 import Container from "../layout/Container";
 import SectionLabel from "../ui/SectionLabel";
@@ -9,6 +9,28 @@ import FadeUp from "../animations/FadeUp";
 
 export default function Testimonials() {
   const [current, setCurrent] = useState(0);
+  const [direction, setDirection] = useState(0);
+
+  function go(next: number) {
+    if (next < 0 || next >= TESTIMONIALS.length || next === current) return;
+    setDirection(next > current ? 1 : -1);
+    setCurrent(next);
+  }
+
+  function handleDragEnd(_: unknown, info: PanInfo) {
+    const threshold = 50;
+    if (info.offset.x < -threshold) {
+      go(current + 1);
+    } else if (info.offset.x > threshold) {
+      go(current - 1);
+    }
+  }
+
+  const variants = {
+    enter: (d: number) => ({ x: d > 0 ? 80 : -80, opacity: 0 }),
+    center: { x: 0, opacity: 1 },
+    exit: (d: number) => ({ x: d > 0 ? -80 : 80, opacity: 0 }),
+  };
 
   return (
     <section className="bg-ink py-32">
@@ -16,14 +38,21 @@ export default function Testimonials() {
         <FadeUp className="mx-auto max-w-3xl text-center">
           <SectionLabel className="text-paper/40">Testimonials</SectionLabel>
 
-          <div className="relative min-h-[200px]">
-            <AnimatePresence mode="wait">
+          <div className="relative min-h-[200px] touch-pan-y overflow-hidden">
+            <AnimatePresence mode="wait" custom={direction}>
               <motion.div
                 key={current}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5 }}
+                custom={direction}
+                variants={variants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.35, ease: "easeInOut" }}
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.15}
+                onDragEnd={handleDragEnd}
+                className="cursor-grab active:cursor-grabbing"
               >
                 <blockquote className="font-serif text-2xl font-light leading-relaxed text-paper md:text-3xl">
                   &ldquo;{TESTIMONIALS[current].quote}&rdquo;
@@ -44,7 +73,7 @@ export default function Testimonials() {
             {TESTIMONIALS.map((_, i) => (
               <button
                 key={i}
-                onClick={() => setCurrent(i)}
+                onClick={() => go(i)}
                 className={`h-2 w-2 rounded-full transition-colors ${
                   i === current ? "bg-warm" : "bg-paper/20"
                 }`}
