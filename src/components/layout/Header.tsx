@@ -34,7 +34,7 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 z-40 w-full transition-all duration-500 ${
+        className={`fixed top-0 z-50 w-full transition-all duration-500 ${
           scrolled
             ? "bg-paper/95 shadow-sm backdrop-blur-md"
             : "bg-transparent"
@@ -80,12 +80,12 @@ export default function Header() {
             >
               <span
                 className={`h-px w-6 transition-all duration-300 ${
-                  scrolled || !darkHero ? "bg-ink" : "bg-paper"
+                  mobileOpen || scrolled || !darkHero ? "bg-ink" : "bg-paper"
                 } ${mobileOpen ? "translate-y-[3.5px] rotate-45" : ""}`}
               />
               <span
                 className={`h-px w-6 transition-all duration-300 ${
-                  scrolled || !darkHero ? "bg-ink" : "bg-paper"
+                  mobileOpen || scrolled || !darkHero ? "bg-ink" : "bg-paper"
                 } ${mobileOpen ? "-translate-y-[3.5px] -rotate-45" : ""}`}
               />
             </button>
