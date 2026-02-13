@@ -83,7 +83,7 @@ export const TESTIMONIALS = [
 
 // Unsplash images: Houston skyline, residential real estate, interiors
 export const IMAGES = {
-  hero: "https://images.unsplash.com/photo-1530089711124-9ca31fb9e863?w=1920&q=80", // Houston skyline
+  hero: "/images/houston-skyline.jpeg",
   about: "/images/thy/portrait-bookshelf.jpeg",
   aboutPage: "/images/thy/portrait-window.jpeg",
   working: "/images/thy/working-laptop.jpeg",
