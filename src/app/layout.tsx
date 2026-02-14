@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+import { draftMode } from "next/headers";
+import { VisualEditing } from "next-sanity/visual-editing";
 import { playfairDisplay, inter } from "@/lib/fonts";
 import { SITE } from "@/lib/constants";
+import { SanityLive } from "@/sanity/lib/live";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import DevIndicator from "@/components/layout/DevIndicator";
@@ -20,7 +23,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -34,6 +37,8 @@ export default function RootLayout({
         <main>{children}</main>
         <Footer />
         <DevIndicator />
+        <SanityLive />
+        {(await draftMode()).isEnabled && <VisualEditing />}
       </body>
     </html>
   );

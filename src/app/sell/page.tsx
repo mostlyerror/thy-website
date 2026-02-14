@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { sanityFetch } from "@/sanity/lib/live";
+import { SELL_PAGE_QUERY } from "@/sanity/lib/queries";
 import Container from "@/components/layout/Container";
 import SectionLabel from "@/components/ui/SectionLabel";
 import SectionTitle from "@/components/ui/SectionTitle";
@@ -10,66 +12,21 @@ export const metadata: Metadata = {
   title: "Sell Your Home",
 };
 
-const steps = [
-  {
-    number: "01",
-    title: "Home Evaluation",
-    description:
-      "I begin with a thorough walk-through of your property, assessing its condition, unique features, and potential improvements that could increase its market value.",
-  },
-  {
-    number: "02",
-    title: "Smart Pricing",
-    description:
-      "Using a detailed Comparative Market Analysis, I find the right listing price. One that brings in qualified buyers and gets you the best return.",
-  },
-  {
-    number: "03",
-    title: "Professional Staging & Photography",
-    description:
-      "First impressions matter. I coordinate professional staging and high-quality photography to showcase your home in its best light across every platform.",
-  },
-  {
-    number: "04",
-    title: "Marketing & Listing",
-    description:
-      "Your home goes on the MLS, gets promoted across social media, and reaches my network of buyers and fellow agents. I use digital ads and print to make sure the right people see it.",
-  },
-  {
-    number: "05",
-    title: "Showings & Open Houses",
-    description:
-      "I manage all showings and host open houses to generate interest, gather feedback, and keep you informed every step of the way.",
-  },
-  {
-    number: "06",
-    title: "Offers & Negotiation",
-    description:
-      "When offers come in, I go through every detail with you, explain the pros and cons, and negotiate hard to get you the best outcome.",
-  },
-  {
-    number: "07",
-    title: "Closing",
-    description:
-      "From accepted offer to closing day, I coordinate inspections, appraisals, title work, and every detail so nothing falls through the cracks.",
-  },
-];
+export default async function SellPage() {
+  const { data: page } = await sanityFetch({ query: SELL_PAGE_QUERY });
 
-export default function SellPage() {
   return (
     <>
-      {/* ── Hero ── */}
+      {/* Hero */}
       <section className="pt-32 pb-20">
         <Container>
           <FadeUp>
             <SectionLabel>Selling Services</SectionLabel>
             <SectionTitle as="h1" className="mb-6 max-w-3xl">
-              Sell Your Home for&nbsp;Top&nbsp;Dollar
+              {page?.heroTitle || "Sell Your Home for\u00a0Top\u00a0Dollar"}
             </SectionTitle>
             <p className="max-w-2xl text-lg leading-relaxed text-stone">
-              Selling a home is a big deal. I bring real market knowledge, a
-              clear game plan, and hands-on support from the day we list to
-              the day you close.
+              {page?.heroText || "Selling a home is a big deal. I bring real market knowledge, a clear game plan, and hands-on support from the day we list to the day you close."}
             </p>
           </FadeUp>
         </Container>
@@ -77,7 +34,7 @@ export default function SellPage() {
 
       <Divider />
 
-      {/* ── The Selling Process ── */}
+      {/* The Selling Process */}
       <section className="py-24">
         <Container>
           <FadeUp>
@@ -88,8 +45,8 @@ export default function SellPage() {
           </FadeUp>
 
           <div className="grid gap-12 md:grid-cols-2 lg:gap-x-20 lg:gap-y-16">
-            {steps.map((step, i) => (
-              <FadeUp key={step.number} delay={i * 0.08}>
+            {page?.steps?.map((step: { _key: string; number?: string | null; title?: string | null; description?: string | null }, i: number) => (
+              <FadeUp key={step._key} delay={i * 0.08}>
                 <div className="group">
                   <span className="mb-3 block font-serif text-sm text-warm">
                     {step.number}
@@ -109,7 +66,7 @@ export default function SellPage() {
 
       <Divider />
 
-      {/* ── Complimentary Comp Analysis ── */}
+      {/* Complimentary CMA */}
       <section className="bg-ink py-24 text-paper">
         <Container>
           <div className="mx-auto max-w-3xl text-center">
@@ -121,11 +78,7 @@ export default function SellPage() {
                 Free Comparable Market&nbsp;Analysis
               </SectionTitle>
               <p className="mx-auto mb-10 max-w-xl text-base leading-relaxed text-silver">
-                Curious what your home is worth in today&apos;s market? I
-                provide a complimentary Comparative Market Analysis, a
-                detailed report of recent sales in your neighborhood, so
-                you can make smart decisions whether you&apos;re ready to
-                sell now or just thinking about it.
+                {page?.cmaOfferText || "Curious what your home is worth in today\u2019s market?"}
               </p>
               <Button href="/contact" variant="accent">
                 Request Your Free Analysis
@@ -135,27 +88,22 @@ export default function SellPage() {
         </Container>
       </section>
 
-      {/* ── Pricing Strategy ── */}
+      {/* Pricing Strategy */}
       <section className="py-24">
         <Container>
           <div className="mx-auto max-w-3xl">
             <FadeUp>
               <SectionLabel>Pricing Strategy</SectionLabel>
               <SectionTitle className="mb-6 max-w-2xl">
-                The Right Price from&nbsp;Day&nbsp;One
+                {page?.pricingTitle || "The Right Price from\u00a0Day\u00a0One"}
               </SectionTitle>
-              <p className="mb-6 text-base leading-relaxed text-stone">
-                Pricing your home correctly is the single most important factor
-                in a successful sale. Overprice it and it sits on the market;
-                underprice it and you leave money on the table.
-              </p>
-              <p className="text-base leading-relaxed text-stone">
-                I use a Comparative Market Analysis (CMA) that looks at recently
-                sold homes, active listings, and market trends in your specific
-                neighborhood. Pair that with what I see on the ground every day
-                in Houston, and we land on a price that brings serious buyers to
-                the table and gets your home sold for what it&apos;s worth.
-              </p>
+              <div className="space-y-6">
+                {page?.pricingParagraphs?.map((p: string, i: number) => (
+                  <p key={i} className="text-base leading-relaxed text-stone">{p}</p>
+                )) || (
+                  <p className="text-base leading-relaxed text-stone">Pricing your home correctly is the single most important factor in a successful sale.</p>
+                )}
+              </div>
             </FadeUp>
           </div>
         </Container>
@@ -163,16 +111,15 @@ export default function SellPage() {
 
       <Divider />
 
-      {/* ── CTA ── */}
+      {/* CTA */}
       <section className="py-32">
         <Container>
           <FadeUp className="text-center">
             <SectionTitle as="h2" className="mb-4">
-              Ready to Sell?
+              {page?.ctaTitle || "Ready to Sell?"}
             </SectionTitle>
             <p className="mx-auto mb-10 max-w-lg text-stone">
-              Let&apos;s discuss your goals, timeline, and how I can help you
-              get the most from your home sale.
+              {page?.ctaText || "Let\u2019s discuss your goals, timeline, and how I can help you get the most from your home sale."}
             </p>
             <Button href="/contact" variant="accent">
               Get in Touch

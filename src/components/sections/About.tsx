@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { IMAGES } from "@/lib/constants";
+import { urlFor } from "@/sanity/lib/image";
 import Container from "../layout/Container";
 import SectionLabel from "../ui/SectionLabel";
 import SectionTitle from "../ui/SectionTitle";
@@ -9,7 +9,19 @@ import Button from "../ui/Button";
 import FadeUp from "../animations/FadeUp";
 import ImageReveal from "../animations/ImageReveal";
 
-export default function About() {
+interface AboutProps {
+  label?: string | null;
+  title?: string | null;
+  paragraph1?: string | null;
+  paragraph2?: string | null;
+  image?: { asset?: { _id: string; url: string } } | null;
+}
+
+export default function About({ label, title, paragraph1, paragraph2, image }: AboutProps) {
+  const imageSrc = image?.asset
+    ? urlFor(image).width(800).url()
+    : "/images/thy/portrait-bookshelf.jpeg";
+
   return (
     <section className="py-32">
       <Container>
@@ -17,7 +29,7 @@ export default function About() {
           <ImageReveal>
             <div className="relative aspect-[3/4]">
               <Image
-                src={IMAGES.about}
+                src={imageSrc}
                 alt="About Thy Nguyen"
                 fill
                 className="object-cover"
@@ -28,19 +40,17 @@ export default function About() {
 
           {/* Text */}
           <FadeUp>
-            <SectionLabel>About</SectionLabel>
+            <SectionLabel>{label || "About"}</SectionLabel>
             <SectionTitle as="h2" className="mb-6">
-              Houston Born and Raised
+              {title || "Houston Born and Raised"}
             </SectionTitle>
             <p className="mb-4 text-base leading-relaxed text-stone">
-              I grew up here, so I know Houston&apos;s neighborhoods, market
-              shifts, and community feel on a level that only comes from
-              actually living it. That local knowledge shows up in every
-              conversation and every deal.
+              {paragraph1 ||
+                "I grew up here, so I know Houston's neighborhoods, market shifts, and community feel on a level that only comes from actually living it. That local knowledge shows up in every conversation and every deal."}
             </p>
             <p className="mb-8 text-base leading-relaxed text-stone">
-              Whether you&apos;re buying your first home, investing, or looking
-              for a rental, I work around your goals and your timeline.
+              {paragraph2 ||
+                "Whether you're buying your first home, investing, or looking for a rental, I work around your goals and your timeline."}
             </p>
             <Button href="/about" variant="secondary">
               Read More

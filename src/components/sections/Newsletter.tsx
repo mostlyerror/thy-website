@@ -5,18 +5,24 @@ import SectionLabel from "../ui/SectionLabel";
 import SectionTitle from "../ui/SectionTitle";
 import FadeUp from "../animations/FadeUp";
 
-export default function Newsletter() {
+interface NewsletterProps {
+  label?: string | null;
+  title?: string | null;
+  description?: string | null;
+}
+
+export default function Newsletter({ label, title, description }: NewsletterProps) {
   return (
     <section className="py-32">
       <Container>
         <FadeUp className="mx-auto max-w-2xl text-center">
-          <SectionLabel>Stay Updated</SectionLabel>
+          <SectionLabel>{label || "Stay Updated"}</SectionLabel>
           <SectionTitle as="h2" className="mb-4">
-            Market Insights
+            {title || "Market Insights"}
           </SectionTitle>
           <p className="mb-8 text-stone">
-            Houston market updates, new listings, and practical real estate tips
-            delivered straight to your inbox.
+            {description ||
+              "Houston market updates, new listings, and practical real estate tips delivered straight to your inbox."}
           </p>
 
           <form

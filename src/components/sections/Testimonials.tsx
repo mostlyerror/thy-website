@@ -2,17 +2,31 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence, type PanInfo } from "framer-motion";
-import { TESTIMONIALS } from "@/lib/constants";
 import Container from "../layout/Container";
 import SectionLabel from "../ui/SectionLabel";
 import FadeUp from "../animations/FadeUp";
 
-export default function Testimonials() {
+interface TestimonialItem {
+  _id: string;
+  quote?: string | null;
+  author?: string | null;
+  role?: string | null;
+}
+
+interface TestimonialsProps {
+  testimonials?: TestimonialItem[] | null;
+}
+
+export default function Testimonials({ testimonials }: TestimonialsProps) {
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(0);
 
+  const items = testimonials?.length ? testimonials : [];
+
+  if (!items.length) return null;
+
   function go(next: number) {
-    if (next < 0 || next >= TESTIMONIALS.length || next === current) return;
+    if (next < 0 || next >= items.length || next === current) return;
     setDirection(next > current ? 1 : -1);
     setCurrent(next);
   }
@@ -55,14 +69,14 @@ export default function Testimonials() {
                 className="cursor-grab active:cursor-grabbing"
               >
                 <blockquote className="font-serif text-2xl font-light leading-relaxed text-paper md:text-3xl">
-                  &ldquo;{TESTIMONIALS[current].quote}&rdquo;
+                  &ldquo;{items[current].quote}&rdquo;
                 </blockquote>
                 <div className="mt-8">
                   <div className="text-sm font-medium text-paper">
-                    {TESTIMONIALS[current].author}
+                    {items[current].author}
                   </div>
                   <div className="mt-1 text-xs text-paper/40">
-                    {TESTIMONIALS[current].role}
+                    {items[current].role}
                   </div>
                 </div>
               </motion.div>
@@ -70,9 +84,9 @@ export default function Testimonials() {
           </div>
 
           <div className="mt-12 flex justify-center gap-3">
-            {TESTIMONIALS.map((_, i) => (
+            {items.map((_, i) => (
               <button
-                key={i}
+                key={items[i]._id}
                 onClick={() => go(i)}
                 className={`h-2 w-2 rounded-full transition-colors ${
                   i === current ? "bg-warm" : "bg-paper/20"

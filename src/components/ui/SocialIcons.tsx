@@ -3,16 +3,28 @@ import { SOCIAL } from "@/lib/constants";
 interface SocialIconsProps {
   className?: string;
   iconClassName?: string;
+  linkedin?: string | null;
+  facebook?: string | null;
+  instagram?: string | null;
 }
 
 export default function SocialIcons({
   className = "",
   iconClassName = "h-5 w-5",
+  linkedin,
+  facebook,
+  instagram,
 }: SocialIconsProps) {
+  const urls = {
+    linkedin: linkedin || SOCIAL.linkedin,
+    facebook: facebook || SOCIAL.facebook,
+    instagram: instagram || SOCIAL.instagram,
+  };
+
   return (
     <div className={`flex items-center gap-4 ${className}`}>
       <a
-        href={SOCIAL.linkedin}
+        href={urls.linkedin}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="LinkedIn"
@@ -23,7 +35,7 @@ export default function SocialIcons({
         </svg>
       </a>
       <a
-        href={SOCIAL.facebook}
+        href={urls.facebook}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Facebook"
@@ -34,7 +46,7 @@ export default function SocialIcons({
         </svg>
       </a>
       <a
-        href={SOCIAL.instagram}
+        href={urls.instagram}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Instagram"

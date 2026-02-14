@@ -2,9 +2,16 @@
 
 import { useState } from "react";
 import Button from "@/components/ui/Button";
-import { CONTACT_SERVICES } from "@/lib/constants";
 
-export default function ContactForm() {
+interface ContactFormProps {
+  services?: string[] | null;
+}
+
+export default function ContactForm({ services }: ContactFormProps) {
+  const items = services?.length
+    ? services
+    : ["Purchase Home", "Buying Home", "Lease my Home", "Looking for Rental"];
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -105,9 +112,9 @@ export default function ContactForm() {
           I&apos;m Interested In
         </span>
         <div className="grid gap-3 sm:grid-cols-2">
-          {CONTACT_SERVICES.map((service) => (
+          {items.map((service, i) => (
             <label
-              key={service}
+              key={`service-${i}`}
               className="flex items-center gap-2 text-sm text-ink"
             >
               <input

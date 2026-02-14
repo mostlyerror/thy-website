@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { sanityFetch } from "@/sanity/lib/live";
+import { LOCATE_PAGE_QUERY } from "@/sanity/lib/queries";
 import Container from "@/components/layout/Container";
 import SectionLabel from "@/components/ui/SectionLabel";
 import SectionTitle from "@/components/ui/SectionTitle";
@@ -10,57 +12,9 @@ export const metadata: Metadata = {
   title: "Locate a Property",
 };
 
-const services = [
-  {
-    title: "Find a Rental",
-    description:
-      "Whether you need a single-family home, townhouse, or condo, I'll help you find a rental that fits your lifestyle and budget in the greater Houston area.",
-  },
-  {
-    title: "Find an Apartment",
-    description:
-      "Navigating Houston's apartment market can be overwhelming. Let me match you with the right community, amenities, and location so you can move in with confidence.",
-  },
-  {
-    title: "Rent Your Property",
-    description:
-      "Get your property rented out faster. I handle the marketing, showings, and tenant screening so you don't have to.",
-  },
-  {
-    title: "Get Comp for Home Value",
-    description:
-      "Curious what your property is worth? I provide complimentary comparative market analyses so you can make informed decisions about selling, refinancing, or renting.",
-  },
-];
+export default async function LocatePage() {
+  const { data: page } = await sanityFetch({ query: LOCATE_PAGE_QUERY });
 
-const steps = [
-  {
-    number: "01",
-    title: "Tell Me What You Need",
-    description:
-      "Share your ideal location, budget, move-in date, and must-haves so I can tailor the search to you.",
-  },
-  {
-    number: "02",
-    title: "Curated Property Matches",
-    description:
-      "I hand-pick listings that match your criteria, saving you hours of scrolling through generic results.",
-  },
-  {
-    number: "03",
-    title: "Tour & Compare",
-    description:
-      "We schedule private showings at your convenience. I walk you through each property and highlight what matters most.",
-  },
-  {
-    number: "04",
-    title: "Secure Your Lease",
-    description:
-      "Once you find the one, I negotiate terms, review the lease, and guide you through every step to move-in day.",
-  },
-];
-
-export default function LocatePage() {
   return (
     <>
       {/* Hero */}
@@ -68,11 +22,11 @@ export default function LocatePage() {
         <Container>
           <FadeUp>
             <SectionLabel>Rental &amp; Leasing Services</SectionLabel>
-            <SectionTitle as="h1">Locate a Property</SectionTitle>
+            <SectionTitle as="h1">
+              {page?.heroTitle || "Locate a Property"}
+            </SectionTitle>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-stone">
-              From apartments to single-family homes, I help renters and
-              landlords across Houston find exactly what they need. I take care
-              of the legwork so you don&apos;t have to.
+              {page?.heroText || "From apartments to single-family homes, I help renters and landlords across Houston find exactly what they need."}
             </p>
           </FadeUp>
         </Container>
@@ -91,8 +45,8 @@ export default function LocatePage() {
           </FadeUp>
 
           <div className="grid gap-8 sm:grid-cols-2">
-            {services.map((service, i) => (
-              <FadeUp key={service.title} delay={i * 0.1}>
+            {page?.services?.map((service: { _key: string; title?: string | null; description?: string | null }, i: number) => (
+              <FadeUp key={service._key} delay={i * 0.1}>
                 <div className="h-full border border-silver p-8 transition-colors duration-300 hover:border-ink">
                   <h3 className="font-serif text-xl font-light">
                     {service.title}
@@ -126,8 +80,8 @@ export default function LocatePage() {
           </FadeUp>
 
           <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
-            {steps.map((step, i) => (
-              <FadeUp key={step.number} delay={i * 0.1}>
+            {page?.steps?.map((step: { _key: string; number?: string | null; title?: string | null; description?: string | null }, i: number) => (
+              <FadeUp key={step._key} delay={i * 0.1}>
                 <div>
                   <span className="font-serif text-5xl font-light text-silver">
                     {step.number}
@@ -153,11 +107,10 @@ export default function LocatePage() {
           <FadeUp className="text-center">
             <SectionLabel>Get Started</SectionLabel>
             <SectionTitle as="h2" className="mx-auto max-w-2xl">
-              Ready to Find Your Next Home?
+              {page?.ctaTitle || "Ready to Find Your Next Home?"}
             </SectionTitle>
             <p className="mx-auto mt-6 max-w-lg text-stone">
-              Reach out today and let me help you find a great rental or get
-              your property leased.
+              {page?.ctaText || "Reach out today and let me help you find a great rental or get your property leased."}
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
               <Button href="/contact" variant="primary">

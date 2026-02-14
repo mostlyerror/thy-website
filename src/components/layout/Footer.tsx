@@ -1,9 +1,20 @@
 import Link from "next/link";
-import { SITE, CONTACT, NAV_LINKS } from "@/lib/constants";
+import { NAV_LINKS } from "@/lib/constants";
+import { sanityFetch } from "@/sanity/lib/live";
+import { SITE_SETTINGS_QUERY } from "@/sanity/lib/queries";
 import Container from "./Container";
 import SocialIcons from "../ui/SocialIcons";
 
-export default function Footer() {
+export default async function Footer() {
+  const { data: settings } = await sanityFetch({ query: SITE_SETTINGS_QUERY });
+
+  const name = settings?.name || "Thy Nguyen";
+  const tagline = settings?.tagline || "Real Estate That Feels Personal";
+  const email = settings?.email || "thy@thynguyen.com";
+  const phone = settings?.phone || "(832) 555-0100";
+  const address = settings?.address || "Houston, TX";
+  const license = settings?.license || "TX #000000";
+
   return (
     <footer className="bg-ink text-paper">
       <Container className="py-20">
@@ -14,12 +25,18 @@ export default function Footer() {
               href="/"
               className="font-serif text-2xl font-light tracking-tight"
             >
-              {SITE.name}
+              {name}
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-paper/60">
-              {SITE.tagline}
+              {tagline}
             </p>
-            <SocialIcons className="mt-6" iconClassName="h-4 w-4 text-paper/60 hover:text-paper" />
+            <SocialIcons
+              className="mt-6"
+              iconClassName="h-4 w-4 text-paper/60 hover:text-paper"
+              linkedin={settings?.linkedin}
+              facebook={settings?.facebook}
+              instagram={settings?.instagram}
+            />
           </div>
 
           {/* Quick Links */}
@@ -49,30 +66,30 @@ export default function Footer() {
             <ul className="space-y-3 text-sm text-paper/60">
               <li>
                 <a
-                  href={`mailto:${CONTACT.email}`}
+                  href={`mailto:${email}`}
                   className="transition-colors hover:text-paper"
                 >
-                  {CONTACT.email}
+                  {email}
                 </a>
               </li>
               <li>
                 <a
-                  href={`tel:${CONTACT.phone.replace(/[^+\d]/g, "")}`}
+                  href={`tel:${phone.replace(/[^+\d]/g, "")}`}
                   className="transition-colors hover:text-paper"
                 >
-                  {CONTACT.phone}
+                  {phone}
                 </a>
               </li>
-              <li>{CONTACT.address}</li>
+              <li>{address}</li>
               <li className="pt-2 text-xs text-paper/30">
-                License {CONTACT.license}
+                License {license}
               </li>
             </ul>
           </div>
         </div>
 
         <div className="mt-16 border-t border-paper/10 pt-8 text-center text-xs text-paper/30">
-          &copy; {new Date().getFullYear()} {SITE.name}. All rights reserved.
+          &copy; {new Date().getFullYear()} {name}. All rights reserved.
         </div>
       </Container>
     </footer>
