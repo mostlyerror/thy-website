@@ -36,6 +36,10 @@ yarn-error.log*
 # logs
 /logs
 
+# sanity
+/dist
+/.sanity
+
 # vercel
 .vercel
 
