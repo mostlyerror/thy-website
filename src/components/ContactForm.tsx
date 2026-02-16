@@ -57,7 +57,9 @@ export default function ContactForm({ services }: ContactFormProps) {
       }),
     });
 
-    if (res.ok) {
+    const data = await res.json();
+
+    if (data.success) {
       setStatus("sent");
       setForm({ name: "", email: "", phone: "", services: [], comments: "" });
     } else {
