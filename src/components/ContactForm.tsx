@@ -19,6 +19,9 @@ export default function ContactForm({ services }: ContactFormProps) {
     services: [] as string[],
     comments: "",
   });
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
+    "idle",
+  );
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -35,9 +38,31 @@ export default function ContactForm({ services }: ContactFormProps) {
     }));
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    // TODO: wire up form submission
+    setStatus("sending");
+
+    const res = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        access_key: process.env.NEXT_PUBLIC_WEB3FORMS_KEY,
+        subject: `New inquiry from ${form.name}`,
+        from_name: form.name,
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        services: form.services.join(", "),
+        comments: form.comments,
+      }),
+    });
+
+    if (res.ok) {
+      setStatus("sent");
+      setForm({ name: "", email: "", phone: "", services: [], comments: "" });
+    } else {
+      setStatus("error");
+    }
   }
 
   const inputClass =
@@ -149,9 +174,25 @@ export default function ContactForm({ services }: ContactFormProps) {
       </div>
 
       {/* Submit */}
-      <Button type="submit" variant="accent" className="w-full sm:w-auto">
-        Send Message
+      <Button
+        type="submit"
+        variant="accent"
+        className="w-full sm:w-auto"
+        disabled={status === "sending"}
+      >
+        {status === "sending" ? "Sending..." : "Send Message"}
       </Button>
+
+      {status === "sent" && (
+        <p className="text-sm text-green-700">
+          Thank you! Your message has been sent. I&apos;ll be in touch soon.
+        </p>
+      )}
+      {status === "error" && (
+        <p className="text-sm text-red-600">
+          Something went wrong. Please try again or contact me directly.
+        </p>
+      )}
     </form>
   );
 }
