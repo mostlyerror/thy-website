@@ -46,7 +46,7 @@ export default function ContactForm({ services }: ContactFormProps) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        access_key: process.env.NEXT_PUBLIC_WEB3FORMS_KEY,
+        access_key: "921e1c0d-fbc0-4ed0-bd93-c5ea9320612f",
         subject: `New inquiry from ${form.name}`,
         from_name: form.name,
         name: form.name,
